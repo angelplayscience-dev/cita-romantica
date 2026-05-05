@@ -101,21 +101,12 @@
 </head>
 <body>
 
-// --- LÓGICA DE MÚSICA MEJORADA ---
-const musica = document.getElementById("miMusica");
-
-function toggleMusica() {
-    if (musica.paused) {
-        // Intentamos reproducir y atrapamos cualquier error del navegador
-        musica.play().then(() => {
-            console.log("Reproduciendo con éxito");
-        }).catch(error => {
-            console.log("El navegador bloqueó el audio. Haz clic en la página primero.");
-        });
-    } else {
-        musica.pause();
-    }
-}
+<!-- Música de Fondo -->
+<audio id="miMusica" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+    Tu navegador no soporta el audio.
+</audio>
+<button id="btn-musica" onclick="toggleMusica()">🎵</button>
 
 <div class="contenedor">
     <div class="area-imagen">
