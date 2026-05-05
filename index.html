@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestra Cita Especial ❤️</title>
+    <style>
+        /* Fondo Negro y Estética General */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: #000; 
+            color: #fff; 
+            margin: 0; 
+            padding: 20px; 
+            overflow: hidden; /* Para que los corazones no creen barras de scroll */
+        }
+
+        /* Animación de Corazones */
+        .corazon {
+            position: absolute;
+            top: -10%;
+            color: #ff4d6d;
+            font-size: 1.5rem;
+            user-select: none;
+            animation: caida linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes caida {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        .contenedor { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            background: rgba(20, 20, 20, 0.85); /* Negro traslúcido */
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.4); 
+            border: 1px solid #ff4d6d;
+            position: relative;
+        }
+        
+        .area-imagen { 
+            height: 400px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+            border-radius: 20px;
+            background: #111;
+        }
+        #imagen-personaje { max-height: 100%; transition: opacity 0.4s ease; }
+        
+        #dialogo { 
+            font-size: 1.3rem; 
+            margin-bottom: 25px; 
+            min-height: 80px; 
+            color: #ff8fa3; 
+            text-shadow: 1px 1px 10px rgba(255, 143, 163, 0.5);
+            line-height: 1.4; 
+        }
+        
+        .opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        button { 
+            padding: 15px 10px; 
+            cursor: pointer; 
+            border: 1px solid #ff4d6d; 
+            background-color: transparent; 
+            color: #ff4d6d; 
+            border-radius: 15px;
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+        button:hover { 
+            background-color: #ff4d6d; 
+            color: #000; 
+            box-shadow: 0 0 15px #ff4d6d;
+        }
+        
+        .progreso { font-size: 0.8rem; color: #666; margin-top: 20px; letter-spacing: 2px; }
+
+        /* Botón de Música */
+        #btn-musica {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4d6d;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Música de Fondo -->
+<audio id="miMusica" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+    Tu navegador no soporta el audio.
+</audio>
+<button id="btn-musica" onclick="toggleMusica()">🎵</button>
+
+<div class="contenedor">
+    <div class="area-imagen">
+        <img id="imagen-personaje" src="posesonriente.jpg" alt="Personaje">
+    </div>
+    
+    <div id="dialogo">¡Llegaste! Estaba contando los minutos... ¿Cómo te sientes hoy?</div>
+    
+    <div class="opciones" id="caja-opciones">
+        <button onclick="siguientePaso()">¡Mejor ahora que te veo!</button>
+        <button onclick="siguientePaso()">Un poco nervioso/a, la verdad</button>
+        <button onclick="siguientePaso()">Con muchas ganas de platicar</button>
+        <button onclick="siguientePaso()">Feliz de estar aquí contigo</button>
+    </div>
+    
+    <div class="progreso" id="contador">PASO 1 DE 15</div>
+</div>
+
+<script>
+    // --- LÓGICA DE CORAZONES ---
+    function crearCorazon() {
+        const corazon = document.createElement('div');
+        corazon.classList.add('corazon');
+        corazon.innerText = '❤️';
+        corazon.style.left = Math.random() * 100 + 'vw';
+        corazon.style.animationDuration = Math.random() * 3 + 2 + 's';
+        corazon.style.opacity = Math.random();
+        document.body.appendChild(corazon);
+        setTimeout(() => corazon.remove(), 5000);
+    }
+    setInterval(crearCorazon, 300);
+
+    // --- LÓGICA DE MÚSICA ---
+    const musica = document.getElementById("miMusica");
+    function toggleMusica() {
+        if (musica.paused) {
+            musica.play();
+        } else {
+            musica.pause();
+        }
+    }
+
+    // --- LÓGICA DEL JUEGO ---
+    let pasoActual = 0;
+    const historia = [
+        { preg: "Te ves increíble hoy... ¿Es una ocasión especial?", foto: "posecoqueteo.jpg", respuestas: ["Para ti siempre", "¡Tú igual!", "Es secreto", "Gracias"] },
+        { preg: "Si pudieras describir nuestra conexión con una palabra...", foto: "posepaleta.jpg", respuestas: ["Inesperada", "Mágica", "Intensa", "Destino"] },
+        { preg: "¿Qué fue lo primero que pensaste al verme?", foto: "posesonriente.jpg", respuestas: ["¡Qué ojos!", "Nervios...", "Quiero conocerte", "No dejé de ver"] },
+        { preg: "¿Y si nunca nos hubiéramos conocido? Qué tristeza.", foto: "posepreocupado.jpg", respuestas: ["Pero pasó", "Destino", "No pienses eso", "Aquí estoy"] },
+        { preg: "¿Qué es lo que más te hace reír?", foto: "posedientesdetiburon.jpg", respuestas: ["Tus bromas", "Un chiste", "Comedia", "Cualquier cosa"] },
+        { preg: "Si te robara un beso ahora... ¿Qué harías?", foto: "poseindiferente.jpg", respuestas: ["Te lo devuelvo", "Me sonrojo", "Cierro los ojos", "Te abrazo"] },
+        { preg: "Siento que puedo contarte todo. ¿Tú igual?", foto: "poselenguafuera.jpg", respuestas: ["Siento paz", "Confío en ti", "Eres especial", "Me siento seguro"] },
+        { preg: "¿Cuál es tu lugar favorito para escapar?", foto: "posecoqueteo.jpg", respuestas: ["Bosque", "Mar", "Mi cuarto", "Donde estés tú"] },
+        { preg: "¿Aparezco en tus pensamientos a veces?", foto: "poseexplicando.jpg", respuestas: ["Siempre", "A cada rato", "Un poquito", "Favorito"] },
+        { preg: "¿Amor a primera vista o paso otra vez?", foto: "posepaleta.jpg", respuestas: ["¡Pasa otra vez!", "Creo en lo nuestro", "Fue amor", "Jajaja, tierno"] },
+        { preg: "Me preocupa que esto sea un sueño... ¿Me prometes quedarte?", foto: "posepreocupado.jpg", respuestas: ["Aquí sigo", "Nunca me voy", "Es real", "Prometido"] },
+        { preg: "Boleto de ida gratis, ¿a dónde nos vamos?", foto: "posedientesdetiburon.jpg", respuestas: ["Isla desierta", "Ciudad nieve", "Mundo entero", "Lejos contigo"] },
+        { preg: "Tengo un secreto... Me gustas mucho.", foto: "posecoqueteo.jpg", respuestas: ["Tú a mí", "Me ganaste", "¿Ah sí?", "Me haces feliz"] },
+        { preg: "La noche es hermosa, pero tú más.", foto: "posesonriente.jpg", respuestas: ["Qué dulce", "Sin palabras", "No acabes esto", "Gracias"] },
+        { preg: "¿Planeamos la siguiente cita ya?", foto: "posecoqueteo.jpg", respuestas: ["¡Sí!", "No te vayas", "Mañana", "Es un hecho ❤️"] }
+    ];
+
+    function siguientePaso() {
+        if (pasoActual < historia.length) {
+            let datos = historia[pasoActual];
+            const img = document.getElementById("imagen-personaje");
+            img.style.opacity = 0;
+            setTimeout(() => {
+                img.src = datos.foto;
+                img.style.opacity = 1;
+            }, 200);
+            document.getElementById("dialogo").innerText = datos.preg;
+            let botones = document.querySelectorAll(".opciones button");
+            for (let i = 0; i < 4; i++) { botones[i].innerText = datos.respuestas[i]; }
+            pasoActual++;
+            document.getElementById("contador").innerText = `PASO ${pasoActual + 1} DE 15`;
+        } else {
+            document.getElementById("imagen-personaje").src = "posecoqueteo.jpg"; 
+            document.getElementById("dialogo").innerText = "Ha sido la mejor cita de mi vida... ¡Te quiero! ❤️";
+            document.getElementById("caja-opciones").style.display = "none";
+            document.getElementById("contador").innerText = "CORAZÓN COMPLETO";
+        }
+    }
+</script>
+
+</body>
+</html>
